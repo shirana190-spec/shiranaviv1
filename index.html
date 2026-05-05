@@ -335,7 +335,7 @@
             const [y, m, d] = dateVal.split('-');
             const details = encodeURIComponent(`תאריך: יום ${daysOfWeek[dateObj.getDay()]}, ${d}/${m}/${y}\n🕒 איסוף: ${pickupTime}\n💰 מחיר: ${document.getElementById('price').value || '0'}₪\n⚠️ אלרגנים: ${getAllergensString()}\n🥛 סוג: ${dietary}\n📝 הערות: ${document.getElementById('notes').value}`);
             
-            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateClean}T080000/${dateClean}T083000&details=${details}&sf=true&output=xml&colorId=4`, '_blank');
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateClean}T080000/${dateClean}T083000&details=${details}&sf=true&output=xml&color=%23F691B2`, '_blank');
         }
 
         function copyCalendarDetails() {
