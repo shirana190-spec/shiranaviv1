@@ -34,7 +34,6 @@
             <h1 class="text-4xl font-bold tracking-tight">Shiran Aviv</h1>
             <p class="text-pink-100 mt-2 text-xl font-light opacity-90">עוגות מעוצבות</p>
         </div>
-        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-pink-300 opacity-20 rounded-full"></div>
     </div>
 
     <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-[2.5rem] overflow-hidden border border-pink-50 pink-card">
@@ -134,15 +133,15 @@
             </div>
 
             <!-- Preview Card -->
-            <div class="bg-gray-50 rounded-[2rem] p-5 border border-pink-50 shadow-inner relative">
-                <div class="absolute top-4 left-4 text-[10px] bg-pink-100 text-pink-500 px-2 py-0.5 rounded-full font-bold">PREVIEW</div>
-                <div id="preview" class="text-[13px] text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-48 pt-2"></div>
+            <div class="bg-gray-50 rounded-[2.5rem] p-5 border border-pink-50 shadow-inner relative">
+                <div class="absolute top-4 left-4 text-[10px] bg-pink-100 text-pink-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">תצוגה מקדימה</div>
+                <div id="preview" class="text-[13px] text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-48 pt-4 font-medium"></div>
             </div>
 
             <!-- Actions -->
             <div class="space-y-3">
                 <button onclick="shareViaWhatsapp()" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 btn-hover">
-                    <span>💬</span> שליחה מהירה ללקוחה
+                    <span>💬</span> שליחת סיכום בווטסאפ
                 </button>
                 
                 <div class="grid grid-cols-2 gap-2">
@@ -290,8 +289,11 @@
         }
 
         function shareViaWhatsapp() {
-            const text = encodeURIComponent(generateMessage());
-            window.open(`https://wa.me/?text=${text}`, '_blank');
+            const text = generateMessage();
+            // שימוש בקידוד מחמיר של ה-URI ושימוש ב-api.whatsapp להגברת תאימות
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+            window.open(whatsappUrl, '_blank');
         }
 
         function openGoogleCalendar() {
@@ -335,7 +337,21 @@
         }
 
         function resetForm() {
-            if(confirm("בטוחה שאת רוצה לנקות את כל הטופס?")) {
+            const confirmBox = document.createElement('div');
+            confirmBox.innerHTML = `
+                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-center;z-index:10000;padding:20px;">
+                    <div style="background:white;padding:25px;border-radius:20px;width:100%;max-width:300px;text-align:center;margin:auto;">
+                        <p style="font-weight:bold;margin-bottom:20px;">לנקות את כל הטופס?</p>
+                        <div style="display:flex;gap:10px;">
+                            <button id="cancelReset" style="flex:1;padding:10px;background:#eee;border-radius:10px;">ביטול</button>
+                            <button id="confirmReset" style="flex:1;padding:10px;background:#ec4899;color:white;border-radius:10px;">נקה</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmBox);
+            document.getElementById('cancelReset').onclick = () => confirmBox.remove();
+            document.getElementById('confirmReset').onclick = () => {
                 document.getElementById('customerName').value = '';
                 document.getElementById('cakeType').value = '';
                 document.getElementById('otherCakeDetail').value = '';
@@ -350,7 +366,8 @@
                 setDietary('חלבית');
                 setPickup('בוקר');
                 updatePreview();
-            }
+                confirmBox.remove();
+            };
         }
         
         window.onload = updatePreview;
