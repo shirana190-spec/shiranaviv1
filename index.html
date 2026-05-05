@@ -1,11 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shiran Aviv - עוגות מעוצבות</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"><\/script>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -28,7 +27,6 @@
 </head>
 <body class="min-h-screen p-2 md:p-6 flex flex-col items-center pb-12">
 
-    <!-- כותרת ראשית מעוצבת -->
     <div class="w-full max-w-md mb-6 text-center text-white bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 p-10 rounded-b-[3.5rem] shadow-2xl relative overflow-hidden">
         <div class="relative z-10">
             <h1 class="text-4xl font-bold tracking-tight">Shiran Aviv</h1>
@@ -40,7 +38,6 @@
     <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-[2.5rem] overflow-hidden border border-pink-50 pink-card">
         <div class="p-6 space-y-6">
             
-            <!-- פרטי לקוחה -->
             <div class="grid grid-cols-1 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">שם הלקוחה (ליומן):</label>
@@ -58,7 +55,6 @@
 
             <hr class="border-pink-50">
 
-            <!-- בחירת עוגה -->
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">סוג העוגה:</label>
@@ -83,7 +79,6 @@
                 </div>
             </div>
 
-            <!-- לוח אלרגנים -->
             <div>
                 <label class="block text-sm font-bold text-gray-600 mb-3 mr-1">אלרגנים (סימון מסיר את האזהרה הכללית):</label>
                 <div class="grid grid-cols-2 gap-2" id="allergenGrid">
@@ -115,13 +110,11 @@
                 <input type="text" id="otherAllergenDetail" oninput="updatePreview()" class="hidden w-full p-3.5 border border-pink-200 rounded-2xl bg-pink-50 mt-2 outline-none shadow-inner" placeholder="פרטי את האלרגיה...">
             </div>
 
-            <!-- הערות -->
             <div>
                 <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">הערות ועיצוב:</label>
                 <textarea id="notes" oninput="updatePreview()" class="w-full p-3.5 border border-pink-100 rounded-2xl bg-pink-50/30 h-24 outline-none resize-none" placeholder="כיתוב, צבעים וכו'..."></textarea>
             </div>
 
-            <!-- מחיר ותאריך -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-pink-50/50 p-3 rounded-2xl border border-pink-100 text-center">
                     <label class="block text-[10px] font-bold text-pink-400 mb-1 uppercase">תאריך אספקה</label>
@@ -133,13 +126,11 @@
                 </div>
             </div>
 
-            <!-- תצוגה מקדימה -->
             <div class="bg-gray-50 rounded-[2.5rem] p-5 border border-pink-50 shadow-inner relative">
                 <div class="absolute top-4 left-4 text-[10px] bg-pink-100 text-pink-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">תצוגה מקדימה</div>
                 <div id="preview" class="text-[13px] text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-48 pt-4 font-medium"></div>
             </div>
 
-            <!-- כפתורי פעולה -->
             <div class="space-y-3">
                 <button onclick="shareViaWhatsapp()" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 btn-hover">
                     <span>💬</span> שליחת סיכום בווטסאפ
@@ -246,7 +237,7 @@
             msg += `אלרגנים: ${allergensText}\n`;
             
             if(dateVal) {
-                const dateObj = new Date(dateVal);
+                const dateObj = new Date(dateVal + 'T12:00:00');
                 const dayName = daysOfWeek[dateObj.getDay()];
                 const [y, m, d] = dateVal.split('-');
                 msg += `תאריך: יום ${dayName}, ${d}/${m}/${y}\n`;
@@ -255,7 +246,6 @@
 
             msg += `*סה"כ לתשלום: ₪${price}*\n\n`;
 
-            // מציג את הפסקה רק אם לא נבחר שום אלרגן
             if (selectedAllergens.length === 0) {
                 msg += `*פירוט אלרגנים:*\n`;
                 msg += `העוגה מכילה /עלולה להכיל כל שאריות עקבות מזעריות של שקדים, בוטנים, אגוזים, חלב, לקטוז ולכן לא מתאימה לבעלי רגישויות או אלרגיות.\n\n`;
@@ -277,25 +267,34 @@
 
         function copyMsg() {
             const text = generateMessage();
-            const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            
-            const btn = document.getElementById('copyBtn');
-            const orig = btn.innerText;
-            btn.innerText = 'הועתק! ✅';
-            setTimeout(() => btn.innerText = orig, 2000);
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('copyBtn');
+                    const orig = btn.innerText;
+                    btn.innerText = 'הועתק! ✅';
+                    setTimeout(() => btn.innerText = orig, 2000);
+                });
+            } else {
+                const el = document.createElement('textarea');
+                el.value = text;
+                el.style.position = 'fixed';
+                el.style.opacity = '0';
+                document.body.appendChild(el);
+                el.focus(); el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                const btn = document.getElementById('copyBtn');
+                const orig = btn.innerText;
+                btn.innerText = 'הועתק! ✅';
+                setTimeout(() => btn.innerText = orig, 2000);
+            }
         }
 
         function shareViaWhatsapp() {
             const text = generateMessage();
-            // פתרון סימני השאלה: שימוש בקידוד כפול ותו מחבר למניעת שבירת מחרוזת
-            const encodedText = encodeURIComponent(text).replace(/[!'()*]/g, escape);
-            const whatsappUrl = `https://wa.me/?text=${encodedText}`;
-            window.open(whatsappUrl, '_blank');
+            // Use wa.me with proper UTF-8 encoding — NO double-encoding, NO escape()
+            const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+            window.open(url, '_blank');
         }
 
         function openGoogleCalendar() {
@@ -308,7 +307,7 @@
 
             const dateClean = dateVal.replace(/-/g, '');
             const title = encodeURIComponent(`${name}: ${cake}`);
-            const dateObj = new Date(dateVal);
+            const dateObj = new Date(dateVal + 'T12:00:00');
             const [y, m, d] = dateVal.split('-');
             const details = encodeURIComponent(`תאריך: יום ${daysOfWeek[dateObj.getDay()]}, ${d}/${m}/${y}\n🕒 איסוף: ${pickupTime}\n💰 מחיר: ${document.getElementById('price').value || '0'}₪\n⚠️ אלרגנים: ${getAllergensString()}\n🥛 סוג: ${dietary}\n📝 הערות: ${document.getElementById('notes').value}`);
             
@@ -324,18 +323,27 @@
             let calText = `${name}: ${cake}\n`;
             if(dateVal) {
                 const [y, m, d] = dateVal.split('-');
-                calText += `תאריך: ${d}/${m}/${y} (${daysOfWeek[new Date(dateVal).getDay()]})\n`;
+                calText += `תאריך: ${d}/${m}/${y} (${daysOfWeek[new Date(dateVal + 'T12:00:00').getDay()]})\n`;
             }
             calText += `זמן איסוף: ${pickupTime}\nמחיר: ${document.getElementById('price').value || '0'}₪\nאלרגנים: ${getAllergensString()}\nסוג: ${dietary}\n`;
             if(document.getElementById('notes').value) calText += `הערות: ${document.getElementById('notes').value}`;
 
-            const el = document.createElement('textarea');
-            el.value = calText;
-            document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            
-            const btn = document.getElementById('copyCalBtn');
-            const orig = btn.innerText; btn.innerText = 'הועתק! ✅';
-            setTimeout(() => btn.innerText = orig, 2000);
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(calText).then(() => {
+                    const btn = document.getElementById('copyCalBtn');
+                    const orig = btn.innerText; btn.innerText = 'הועתק! ✅';
+                    setTimeout(() => btn.innerText = orig, 2000);
+                });
+            } else {
+                const el = document.createElement('textarea');
+                el.value = calText;
+                el.style.position = 'fixed'; el.style.opacity = '0';
+                document.body.appendChild(el); el.focus(); el.select();
+                document.execCommand('copy'); document.body.removeChild(el);
+                const btn = document.getElementById('copyCalBtn');
+                const orig = btn.innerText; btn.innerText = 'הועתק! ✅';
+                setTimeout(() => btn.innerText = orig, 2000);
+            }
         }
 
         function resetForm() {
@@ -358,8 +366,6 @@
         }
         
         window.onload = updatePreview;
-    </script>
+    <\/script>
 </body>
 </html>
-
-```
