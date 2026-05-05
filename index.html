@@ -132,9 +132,7 @@
             </div>
 
             <div class="space-y-3">
-                <button onclick="shareViaWhatsapp()" id="waBtn" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 btn-hover">
-                    <span>💬</span> העתק והפתח וואטסאפ
-                </button>
+
                 
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="copyMsg()" id="copyBtn" class="py-3 bg-pink-600 text-white rounded-2xl font-bold text-sm shadow-md btn-hover">
@@ -230,7 +228,7 @@
             const dateVal = document.getElementById('orderDate').value;
             const allergensText = getAllergensString();
 
-            let msg = `*סיכום ופירוט הזמנה* 🎂\n\n`;
+            let msg = `*סיכום ופירוט הזמנה* 🎂\n`;
             msg += `${cake}\n`;
             msg += `עוגה ${dietary}\n`;
             if(notes) msg += `פרטים נוספים: ${notes}\n`;
