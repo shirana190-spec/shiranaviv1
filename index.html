@@ -132,8 +132,8 @@
             </div>
 
             <div class="space-y-3">
-                <button onclick="shareViaWhatsapp()" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 btn-hover">
-                    <span>💬</span> שליחת סיכום בווטסאפ
+                <button onclick="shareViaWhatsapp()" id="waBtn" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg hover:bg-green-600 shadow-lg flex items-center justify-center gap-2 btn-hover">
+                    <span>💬</span> העתק והפתח וואטסאפ
                 </button>
                 
                 <div class="grid grid-cols-2 gap-2">
@@ -292,9 +292,35 @@
 
         function shareViaWhatsapp() {
             const text = generateMessage();
-            // Use wa.me with proper UTF-8 encoding — NO double-encoding, NO escape()
-            const url = 'https://wa.me/?text=' + encodeURIComponent(text);
-            window.open(url, '_blank');
+            const btn = document.getElementById('waBtn');
+            const orig = btn.innerHTML;
+
+            // Step 1: copy text to clipboard
+            const copyPromise = (navigator.clipboard && window.isSecureContext)
+                ? navigator.clipboard.writeText(text)
+                : new Promise((res) => {
+                    const el = document.createElement('textarea');
+                    el.value = text;
+                    el.style.position = 'fixed';
+                    el.style.opacity = '0';
+                    document.body.appendChild(el);
+                    el.focus(); el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    res();
+                });
+
+            copyPromise.then(() => {
+                // Step 2: show feedback then open WhatsApp
+                btn.innerHTML = '<span>✅</span> הועתק! פותח וואטסאפ...';
+                btn.style.backgroundColor = '#16a34a';
+                setTimeout(() => {
+                    // Open WhatsApp without text in URL — user pastes manually
+                    window.open('https://wa.me/', '_blank');
+                    btn.innerHTML = orig;
+                    btn.style.backgroundColor = '';
+                }, 1200);
+            });
         }
 
         function openGoogleCalendar() {
