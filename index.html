@@ -28,19 +28,18 @@
 </head>
 <body class="min-h-screen p-2 md:p-6 flex flex-col items-center pb-12">
 
-    <!-- הכותרת החדשה - Shiran Aviv (תמונה 2) -->
+    <!-- Header Section (Image 2 style) -->
     <div class="w-full max-w-md mb-6 text-center text-white bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 p-10 rounded-b-[3.5rem] shadow-2xl relative overflow-hidden">
         <div class="relative z-10">
             <h1 class="text-4xl font-bold tracking-tight">Shiran Aviv</h1>
             <p class="text-pink-100 mt-2 text-xl font-light opacity-90 border-t border-pink-300/30 pt-2 inline-block leading-tight">עוגות מעוצבות</p>
         </div>
-        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-pink-300 opacity-20 rounded-full"></div>
     </div>
 
     <div class="w-full max-w-md bg-white/95 backdrop-blur-sm rounded-[2.5rem] overflow-hidden border border-pink-50 pink-card">
         <div class="p-6 space-y-6">
             
-            <!-- שם הלקוח וזמן איסוף -->
+            <!-- Customer Info -->
             <div class="grid grid-cols-1 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">שם הלקוחה (ליומן):</label>
@@ -58,7 +57,7 @@
 
             <hr class="border-pink-50">
 
-            <!-- בחירת עוגה -->
+            <!-- Cake Selection -->
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">סוג העוגה:</label>
@@ -74,7 +73,7 @@
                         <option value="עוגה מעוצבת גבוה">עוגה מעוצבת גבוה</option>
                         <option value="אחר">אחר (פירוט חופשי)</option>
                     </select>
-                    <input type="text" id="otherCakeDetail" oninput="updatePreview()" class="hidden w-full p-3.5 border border-pink-200 rounded-2xl bg-pink-50 mt-2 outline-none shadow-inner" placeholder="מה שם העוגה?">
+                    <input type="text" id="otherCakeDetail" oninput="updatePreview()" class="hidden w-full p-3.5 border border-pink-200 rounded-2xl bg-pink-50 mt-2 outline-none shadow-inner" placeholder="איזו עוגה זו?">
                 </div>
 
                 <div class="flex gap-2">
@@ -83,7 +82,7 @@
                 </div>
             </div>
 
-            <!-- לוח אלרגנים (תמונה 1) -->
+            <!-- Allergens Grid -->
             <div>
                 <label class="block text-sm font-bold text-gray-600 mb-3 mr-1">אלרגנים (סימון מסיר את האזהרה הכללית):</label>
                 <div class="grid grid-cols-2 gap-2" id="allergenGrid">
@@ -115,13 +114,13 @@
                 <input type="text" id="otherAllergenDetail" oninput="updatePreview()" class="hidden w-full p-3.5 border border-pink-200 rounded-2xl bg-pink-50 mt-2 outline-none shadow-inner" placeholder="פרטי את האלרגיה...">
             </div>
 
-            <!-- הערות -->
+            <!-- Notes -->
             <div>
                 <label class="block text-sm font-bold text-gray-600 mb-2 mr-1">הערות ועיצוב:</label>
                 <textarea id="notes" oninput="updatePreview()" class="w-full p-3.5 border border-pink-100 rounded-2xl bg-pink-50/30 h-24 outline-none resize-none" placeholder="כיתוב, צבעים וכו'..."></textarea>
             </div>
 
-            <!-- תאריך ומחיר -->
+            <!-- Price and Date -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-pink-50/50 p-3 rounded-2xl border border-pink-100 text-center">
                     <label class="block text-[10px] font-bold text-pink-400 mb-1 uppercase tracking-wider">תאריך אספקה</label>
@@ -133,13 +132,13 @@
                 </div>
             </div>
 
-            <!-- תצוגה מקדימה -->
+            <!-- Preview Card -->
             <div class="bg-gray-50 rounded-[2.5rem] p-5 border border-pink-50 shadow-inner relative">
                 <div class="absolute top-4 left-4 text-[10px] bg-pink-100 text-pink-500 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">תצוגה מקדימה</div>
                 <div id="preview" class="text-[13px] text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-48 pt-4 font-medium"></div>
             </div>
 
-            <!-- כפתורי פעולה -->
+            <!-- Actions -->
             <div class="space-y-3">
                 <button onclick="copyMsg()" id="copyBtn" class="w-full py-5 bg-pink-600 text-white rounded-2xl font-bold text-xl hover:bg-pink-700 shadow-lg flex items-center justify-center gap-2 btn-hover transition-all">
                     📋 העתקת הודעה לווטסאפ
@@ -314,8 +313,11 @@
             
             let calText = `${name}: ${cake}\n`;
             if(dateVal) {
+                const dateObj = new Date(dateVal + 'T12:00:00');
                 const [y, m, d] = dateVal.split('-');
-                calText += `תאריך: ${d}/${m}/${y} (${daysOfWeek[new Date(dateVal + 'T12:00:00').getDay()]})\n`;
+                const dayName = daysOfWeek[dateObj.getDay()];
+                // Updated format: "יום [שם היום], [תאריך]" without parentheses
+                calText += `תאריך: יום ${dayName}, ${d}/${m}/${y}\n`;
             }
             calText += `זמן איסוף: ${pickupTime}\nמחיר: ${document.getElementById('price').value || '0'}₪\nאלרגנים: ${getAllergensString()}\nסוג: ${dietary}\n`;
             if(document.getElementById('notes').value) calText += `הערות: ${document.getElementById('notes').value}`;
