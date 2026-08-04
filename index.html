@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -28,7 +27,7 @@
 </head>
 <body class="min-h-screen p-2 md:p-6 flex flex-col items-center pb-12">
 
-    <!-- Header Section (Image 2 style) -->
+    <!-- Header Section -->
     <div class="w-full max-w-md mb-6 text-center text-white bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 p-10 rounded-b-[3.5rem] shadow-2xl relative overflow-hidden">
         <div class="relative z-10">
             <h1 class="text-4xl font-bold tracking-tight">Shiran Aviv</h1>
@@ -152,6 +151,10 @@
                         📎 העתקה ליומן
                     </button>
                 </div>
+
+                <button onclick="copyShortSummary()" id="copyShortBtn" class="w-full py-3 bg-pink-50 text-pink-600 rounded-2xl font-bold text-sm btn-hover shadow-sm transition-all border border-pink-200 flex items-center justify-center gap-2">
+                    📝 העתקת סיכום מקוצר
+                </button>
                 
                 <button onclick="resetForm()" class="w-full py-3 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm btn-hover transition-all">
                     🔄 ניקוי טופס
@@ -316,7 +319,6 @@
                 const dateObj = new Date(dateVal + 'T12:00:00');
                 const [y, m, d] = dateVal.split('-');
                 const dayName = daysOfWeek[dateObj.getDay()];
-                // Updated format: "יום [שם היום], [תאריך]" without parentheses
                 calText += `תאריך: יום ${dayName}, ${d}/${m}/${y}\n`;
             }
             calText += `זמן איסוף: ${pickupTime}\nמחיר: ${document.getElementById('price').value || '0'}₪\nאלרגנים: ${getAllergensString()}\nסוג: ${dietary}\n`;
@@ -329,6 +331,32 @@
             document.execCommand('copy'); document.body.removeChild(el);
             
             const btn = document.getElementById('copyCalBtn');
+            const orig = btn.innerText; btn.innerText = 'הועתק! ✅';
+            setTimeout(() => btn.innerText = orig, 2000);
+        }
+
+        function copyShortSummary() {
+            const cakeSelect = document.getElementById('cakeType').value;
+            const cake = (cakeSelect === 'אחר') ? (document.getElementById('otherCakeDetail').value || 'הזמנה') : (cakeSelect || 'הזמנה');
+            const dateVal = document.getElementById('orderDate').value;
+            
+            let shortText = `*סיכום הזמנה* 🎂\n${cake}\n`;
+            if(dateVal) {
+                const dateObj = new Date(dateVal + 'T12:00:00');
+                const [y, m, d] = dateVal.split('-');
+                const dayName = daysOfWeek[dateObj.getDay()];
+                shortText += `תאריך: יום ${dayName}, ${d}/${m}/${y}\n`;
+            }
+            shortText += `זמן איסוף: בתיאום\nמחיר: ${document.getElementById('price').value || '0'}₪\nאלרגנים: ${getAllergensString()}\nסוג: ${dietary}\n`;
+            if(document.getElementById('notes').value) shortText += `הערות: ${document.getElementById('notes').value}`;
+
+            const el = document.createElement('textarea');
+            el.value = shortText;
+            el.style.position = 'fixed'; el.style.opacity = '0';
+            document.body.appendChild(el); el.focus(); el.select();
+            document.execCommand('copy'); document.body.removeChild(el);
+            
+            const btn = document.getElementById('copyShortBtn');
             const orig = btn.innerText; btn.innerText = 'הועתק! ✅';
             setTimeout(() => btn.innerText = orig, 2000);
         }
@@ -356,5 +384,3 @@
     </script>
 </body>
 </html>
-
-```
